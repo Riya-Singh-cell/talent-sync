@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: talentsync-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - talentsync-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: talentsync-backend
+    environment:
+      MONGO_URL: mongodb://admin:password@mongodb:27017
+      DATABASE_NAME: talentsync_ai
+      ENVIRONMENT: development
+      JWT_SECRET: talentsync_ai_very_secret_key_1234567890
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8000,http://localhost:5173
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CACHE_ENABLED: "false"
+      LOG_LEVEL: INFO
+    ports:
+      - "8000:8000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - talentsync-network
+    volumes:
+      - ./backend:/app
+    command: python run.py
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: talentsync-frontend
+    environment:
+      VITE_API_URL: http://localhost:8000
+      VITE_API_BASE: http://localhost:8000/api
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    networks:
+      - talentsync-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  mongo_data:
+
+networks:
+  talentsync-network:
+    driver: bridge
