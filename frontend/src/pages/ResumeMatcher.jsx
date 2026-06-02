@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Upload, CheckCircle2, AlertTriangle, Loader2, Sparkles } from 'lucide-react';
+import { Upload, CheckCircle2, AlertTriangle, Loader2, Sparkles, LogOut } from 'lucide-react';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 // Set up PDF.js worker from local bundle
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-export default function ResumeMatcher() {
+export default function ResumeMatcher({ user, onLogout }) {
   const [dragActive, setDragActive] = useState(false);
   const [resumeFile, setResumeFile] = useState(null);
   const [resumeText, setResumeText] = useState('');
@@ -128,11 +128,28 @@ export default function ResumeMatcher() {
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
       {/* Header */}
       <header className="fixed w-full top-0 z-50 bg-slate-900/80 backdrop-blur border-b border-slate-700/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-2">
-          <Sparkles className="w-8 h-8 text-cyan-400" />
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
-            Resume Matcher
-          </h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-8 h-8 text-cyan-400" />
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">
+              Resume Matcher
+            </h1>
+          </div>
+          {user && (
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm text-slate-400">Welcome back,</p>
+                <p className="font-semibold text-white">{user.full_name}</p>
+              </div>
+              <button
+                onClick={onLogout}
+                className="flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600/30 border border-red-600/50 rounded-lg text-red-400 transition-all"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
