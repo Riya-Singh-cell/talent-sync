@@ -253,20 +253,3 @@ lsof -i :8000
 pip install --force-reinstall -r requirements.txt
 ```
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit issues and pull requests.
-
-## License
-
-This project is licensed under the MIT License - see LICENSE file for details.
-
-## Support
-
-For issues, questions, or suggestions, please open an issue on GitHub or contact the development team.
-
----
-
-**Version**: 2.0.0  
-**Last Updated**: May 2026  
-**Status**: Production Ready
