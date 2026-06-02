@@ -118,22 +118,22 @@ docker-compose down
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register new user (recruiter/candidate)
+- `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login user
+- `GET /api/auth/me` - Get current user profile
 
 ### Resume Management
-- `POST /api/resume/upload-resume` - Upload and process resume PDF
-- `GET /api/resume` - Resume endpoint status
+- `POST /api/resume/upload-resume` - Upload and parse resume PDF
+- `GET /api/resume/` - Resume endpoint status
+- `POST /api/resume/match-with-job` - Match resume with job description
 
 ### Job Management
-- `POST /api/job` - Create job posting (recruiters only)
-- `GET /api/job` - List all jobs
+- `POST /api/job/` - Create job posting
+- `GET /api/job/` - List all jobs
 - `GET /api/job/{job_id}` - Get job details
-- `POST /api/job/{job_id}/rank` - Rank candidates for job
+- `POST /api/job/rank-candidates` - Rank candidates for job
 
 ### System
-- `GET /` - API information
-- `GET /health` - Health check endpoint
 - `GET /docs` - Interactive API documentation (Swagger UI)
 
 ## Usage Flow
@@ -235,17 +235,16 @@ TalentSync-AI/
 ### MongoDB Connection Issues
 ```
 Error: Cannot connect to MongoDB
-Solution: Ensure MongoDB is running and MONGO_URL is correctly set
+Solution: Ensure MongoDB is running and MONGO_URL is correctly set in .env
 ```
 
 ### Port Already in Use
 ```bash
-# Find process using port
-netstat -ano | findstr :8000  # Windows
-lsof -i :8000                 # macOS/Linux
+# Find process using port (Windows)
+netstat -ano | findstr :8000
 
-# Kill process (Windows)
-taskkill /PID <PID> /F
+# Find process using port (macOS/Linux)
+lsof -i :8000
 ```
 
 ### Module Import Errors
@@ -253,22 +252,6 @@ taskkill /PID <PID> /F
 # Reinstall dependencies
 pip install --force-reinstall -r requirements.txt
 ```
-
-## Performance Metrics
-
-- **Resume Upload**: < 2 seconds for typical PDF
-- **Candidate Ranking**: < 1 second for 100+ candidates
-- **Cache Hit**: < 100ms for cached results
-- **Embedding Generation**: ~500ms per resume
-
-## Future Enhancements
-
-- [ ] Advanced filtering and search
-- [ ] Batch resume processing
-- [ ] Interview scheduling integration
-- [ ] ATS integration
-- [ ] ML model fine-tuning
-- [ ] Multi-language support
 
 ## Contributing
 
